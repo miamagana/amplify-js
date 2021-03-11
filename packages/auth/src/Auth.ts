@@ -328,7 +328,10 @@ export class AuthClass {
 				validationData = [];
 				Object.keys(validationDataObject).map(key => {
 					validationData.push(
-						new CognitoUserAttribute({ Name: key, Value: validationDataObject[key] })
+						new CognitoUserAttribute({
+							Name: key,
+							Value: validationDataObject[key],
+						})
 					);
 				});
 			}
@@ -341,6 +344,11 @@ export class AuthClass {
 		}
 		if (!password) {
 			return this.rejectAuthError(AuthErrorTypes.EmptyPassword);
+		}
+		// check if confirm password is given and check if it's valid
+		const confirmPassword = params['confirm_password'];
+		if (!!confirmPassword && confirmPassword !== password) {
+			return this.rejectAuthError(AuthErrorTypes.PasswordsMismatch);
 		}
 
 		logger.debug('signUp attrs:', attributes);

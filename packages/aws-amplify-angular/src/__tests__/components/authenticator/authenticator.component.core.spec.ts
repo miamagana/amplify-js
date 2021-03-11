@@ -1,9 +1,3 @@
-import { Component } from '@angular/core';
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import {
-	BrowserDynamicTestingModule,
-	platformBrowserDynamicTesting,
-} from '@angular/platform-browser-dynamic/testing';
 import Amplify from 'aws-amplify';
 import { AmplifyService } from '../../../providers/amplify.service';
 import { AuthenticatorComponentCore } from '../../../components/authenticator/authenticator/authenticator.component.core';

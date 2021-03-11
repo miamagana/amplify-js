@@ -20,6 +20,7 @@ import { AuthenticatorComponent } from './components/authenticator/authenticator
 import { AuthenticatorComponentCore } from './components/authenticator/authenticator/authenticator.component.core';
 import { ConfirmSignInComponent } from './components/authenticator/confirm-sign-in-component/confirm-sign-in.factory';
 import { ConfirmSignInComponentCore } from './components/authenticator/confirm-sign-in-component/confirm-sign-in-component.core';
+import { ConfirmPasswordFieldComponent } from './components/authenticator/confirm-password-field-component/confirm-password-field.component.core';
 import { ConfirmSignUpComponent } from './components/authenticator/confirm-sign-up-component/confirm-sign-up.factory';
 import { ConfirmSignUpComponentCore } from './components/authenticator/confirm-sign-up-component/confirm-sign-up.component.core';
 import { SignInComponent } from './components/authenticator/sign-in-component/sign-in.component.factory';
@@ -56,6 +57,7 @@ const components = [
 	ConfirmSignInComponentCore,
 	ConfirmSignUpComponent,
 	ConfirmSignUpComponentCore,
+	ConfirmPasswordFieldComponent,
 	SignInComponent,
 	SignInComponentCore,
 	SignUpComponent,

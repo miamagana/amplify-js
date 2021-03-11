@@ -154,6 +154,7 @@ export const genericAttrs = {
 	usernameInput: 'username-input',
 	emailInput: 'email-input',
 	phoneNumberInput: 'phone-number-input',
+	confirmPasswordInput: 'confirm-password-input',
 	dialCodeSelect: 'dial-code-select',
 };
 

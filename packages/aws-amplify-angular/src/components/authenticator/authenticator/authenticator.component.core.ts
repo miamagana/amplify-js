@@ -13,7 +13,7 @@
  */
 // tslint:enable
 
-import { Component, Input, ViewEncapsulation, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AmplifyService, AuthState } from '../../../providers';
 
 const template = `
@@ -30,6 +30,7 @@ const template = `
       [authState]="authState"
       [signUpConfig]="_signUpConfig"
       [usernameAttributes]="_usernameAttributes"
+	  [confirmPassword]="true"
       [hide]="hide"
     ></amplify-auth-sign-up-core>
 
@@ -78,6 +79,7 @@ export class AuthenticatorComponentCore implements OnInit {
 	};
 	_signUpConfig: any = {};
 	_usernameAttributes: string = 'username';
+	_confirmPassword: boolean = false;
 
 	constructor(public amplifyService: AmplifyService) {
 		this.subscribe();
@@ -117,6 +119,9 @@ export class AuthenticatorComponentCore implements OnInit {
 
 		this._usernameAttributes =
 			data.usernameAttributes || this._usernameAttributes || 'username';
+
+		this._confirmPassword =
+			data.confirmPassword || this._confirmPassword || false;
 	}
 
 	@Input()
@@ -127,6 +132,11 @@ export class AuthenticatorComponentCore implements OnInit {
 	@Input()
 	set usernameAttributes(usernameAttributes: string) {
 		this._usernameAttributes = usernameAttributes || 'username';
+	}
+
+	@Input()
+	set confirmPassword(confirmPassword: boolean) {
+		this._confirmPassword = confirmPassword || false;
 	}
 
 	subscribe() {

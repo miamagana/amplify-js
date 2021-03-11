@@ -39,6 +39,7 @@ const template = `
   [authState]="authState"
   [signUpConfig]="_signUpConfig"
   [usernameAttributes]="_usernameAttributes"
+  [confirmPassword]="_confirmPasword"
   [hide]="hide"
 ></amplify-auth-sign-up-ionic>
 

@@ -15,8 +15,11 @@
 
 import { Component, Input, OnInit, Inject } from '@angular/core';
 import defaultSignUpFieldAssets, {
+	DefaultFieldsPasswordConfirmation,
 	signUpWithEmailFields,
+	signUpWithEmailFieldsPasswordConfirmation,
 	signUpWithPhoneNumberFields,
+	signUpWithPhoneNumberFieldsPasswordConfirmation,
 } from '../../../assets/default-sign-up-fields';
 import { UsernameAttributes, PhoneFieldOutput } from '../types';
 import { AmplifyService } from '../../../providers/amplify.service';
@@ -31,35 +34,43 @@ const template = `
       <div
         class="amplify-form-header"
         data-test="${auth.signUp.headerSection}"
-        >{{ this.amplifyService.i18n().get(this.header) }}</div>
+        >Pepe</div>
       <div class="amplify-form-row" *ngFor="let field of signUpFields">
-        <div *ngIf="field.key !== 'phone_number'">
-          <label class="amplify-input-label">
-            {{ this.amplifyService.i18n().get(field.label) }}
-            <span *ngIf="field.required">*</span>
-          </label>
-          <input #{{field.key}}
-            class="amplify-form-input"
-            [ngClass]="{'amplify-input-invalid ': field.invalid}"
-            type={{field.type}}
-            [placeholder]="this.amplifyService.i18n().get(field.label)"
-            [(ngModel)]="user[field.key]"
-            name="field.key"
-            data-test="${auth.signUp.nonPhoneNumberInput}"
-            />
-            <div *ngIf="field.key === 'password'" class="amplify-form-extra-details">
-              {{passwordPolicy}}
-            </div>
-        </div>
-        <div *ngIf="field.key === 'phone_number'">
-          <amplify-auth-phone-field-core
-            [label]="field.label"
-            [required]="field.required"
-            [placeholder]="field.placeholder"
-            [defaultCountryCode]="country_code"
-            (phoneFieldChanged)="onPhoneFieldChanged($event)"
-          ></amplify-auth-phone-field-core>
-        </div>
+	  <ng-container [ngSwitch]="field.key">
+	  	<div *ngSwitchCase="'phone_number'">
+			<amplify-auth-phone-field-core
+		  	[label]="field.label"
+		  	[required]="field.required"
+		  	[placeholder]="field.placeholder"
+		  	[defaultCountryCode]="country_code"
+		  	(phoneFieldChanged)="onPhoneFieldChanged($event)"
+			></amplify-auth-phone-field-core>
+	  	</div>
+	  	<div *ngSwitchCase="'confirm_password'">
+			<amplify-auth-confirm-password-field-core
+		  	[label]="field.label"
+		  	(confirmPasswordChanged)="confirmPasswordChanged($event)"
+			></amplify-auth-confirm-password-field-core>
+	  	</div>
+	  	<div *ngSwitchDefault>
+			<label class="amplify-input-label">
+		  	{{ this.amplifyService.i18n().get(field.label) }}
+		  	<span *ngIf="field.required">*</span>
+			</label>
+			<input #{{field.key}}
+		  	class="amplify-form-input"
+		  	[ngClass]="{'amplify-input-invalid ': field.invalid}"
+		  	type={{field.type}}
+		  	[placeholder]="this.amplifyService.i18n().get(field.label)"
+		  	[(ngModel)]="user[field.key]"
+		  	name="field.key"
+		  	data-test="${auth.signUp.nonPhoneNumberInput}"
+		  	/>
+		  	<div *ngIf="field.key === 'password'" class="amplify-form-extra-details">
+				{{passwordPolicy}}
+		  	</div>
+	  	</div>
+	  </ng-container>
       </div>
       <div class="amplify-form-actions">
         <div class="amplify-form-cell-left" *ngIf="!shouldHide('SignIn')">
@@ -109,8 +120,10 @@ export class SignUpComponentCore implements OnInit {
 	_show: boolean;
 	_signUpConfig: any;
 	_usernameAttributes: string = 'username';
+	_confirmPassword: boolean = false;
 	user: any = {};
 	local_phone_number: string = '';
+	local_confirm_password: string = '';
 	country_code: string = '1';
 	header: string = 'Create a new account';
 	defaultSignUpFields: SignUpField[] = defaultSignUpFieldAssets;
@@ -130,6 +143,7 @@ export class SignUpComponentCore implements OnInit {
 		this._authState = data.authState;
 		this._show = data.authState.state === 'signUp';
 		this._usernameAttributes = data.usernameAttributes;
+		this._confirmPassword = data.confirmPassword;
 		if (data.signUpConfig) {
 			this._signUpConfig = data.signUpConfig;
 			if (this._signUpConfig.defaultCountryCode) {
@@ -145,14 +159,6 @@ export class SignUpComponentCore implements OnInit {
 				this.hiddenFields = this._signUpConfig.hiddenDefaults;
 			}
 
-			if (this._usernameAttributes === UsernameAttributes.EMAIL) {
-				this.signUpFields = signUpWithEmailFields;
-				this.defaultSignUpFields = signUpWithEmailFields;
-			} else if (this._usernameAttributes === UsernameAttributes.PHONE_NUMBER) {
-				this.signUpFields = signUpWithPhoneNumberFields;
-				this.defaultSignUpFields = signUpWithPhoneNumberFields;
-			}
-
 			if (this._signUpConfig.passwordPolicy) {
 				this.passwordPolicy = this._signUpConfig.passwordPolicy;
 			}
@@ -164,13 +170,6 @@ export class SignUpComponentCore implements OnInit {
 	@Input()
 	set usernameAttributes(usernameAttributes: string) {
 		this._usernameAttributes = usernameAttributes;
-		if (this._usernameAttributes === UsernameAttributes.EMAIL) {
-			this.signUpFields = signUpWithEmailFields;
-			this.defaultSignUpFields = signUpWithEmailFields;
-		} else if (this._usernameAttributes === UsernameAttributes.PHONE_NUMBER) {
-			this.signUpFields = signUpWithPhoneNumberFields;
-			this.defaultSignUpFields = signUpWithPhoneNumberFields;
-		}
 	}
 
 	@Input()
@@ -201,10 +200,16 @@ export class SignUpComponentCore implements OnInit {
 		}
 	}
 
+	@Input()
+	set confirmPassword(confirmPassword: boolean) {
+		this._confirmPassword = confirmPassword;
+	}
+
 	ngOnInit() {
 		if (!this.amplifyService.auth()) {
 			this.logger.warn('Auth module not registered on AmplifyService provider');
 		}
+		this.setSignUpFields(this._usernameAttributes, this._confirmPassword);
 		this.sortFields();
 	}
 
@@ -382,20 +387,35 @@ export class SignUpComponentCore implements OnInit {
 	validate() {
 		const invalids = [];
 		this.signUpFields.map(el => {
-			if (el.key !== 'phone_number') {
-				if (el.required && !this.user[el.key]) {
-					el.invalid = true;
-					invalids.push(this.amplifyService.i18n().get(el.label));
-				} else {
-					el.invalid = false;
-				}
-			} else {
-				if (el.required && (!this.country_code || !this.local_phone_number)) {
-					el.invalid = true;
-					invalids.push(this.amplifyService.i18n().get(el.label));
-				} else {
-					el.invalid = false;
-				}
+			switch (el.key) {
+				case 'phone_number':
+					if (el.required && (!this.country_code || !this.local_phone_number)) {
+						el.invalid = true;
+						invalids.push(this.amplifyService.i18n().get(el.label));
+					} else {
+						el.invalid = false;
+					}
+					break;
+				case 'confirm_password':
+					if (
+						!this.local_confirm_password ||
+						this.local_confirm_password !== this.user.password
+					) {
+						el.invalid = true;
+						invalids.push(this.amplifyService.i18n().get(el.label));
+					} else {
+						el.invalid = false;
+					}
+					break;
+
+				default:
+					if (el.required && !this.user[el.key]) {
+						el.invalid = true;
+						invalids.push(this.amplifyService.i18n().get(el.label));
+					} else {
+						el.invalid = false;
+					}
+					break;
 			}
 		});
 		return invalids;
@@ -419,5 +439,32 @@ export class SignUpComponentCore implements OnInit {
 	onPhoneFieldChanged(event: PhoneFieldOutput) {
 		this.country_code = event.country_code;
 		this.local_phone_number = event.local_phone_number;
+	}
+
+	confirmPasswordChanged(value: string) {
+		this.local_confirm_password = value;
+	}
+
+	setSignUpFields(userAttribute: string, confirmPassword: boolean): void {
+		let fields = [];
+		switch (userAttribute) {
+			case UsernameAttributes.EMAIL:
+				fields = confirmPassword
+					? signUpWithEmailFieldsPasswordConfirmation
+					: signUpWithEmailFields;
+				break;
+			case UsernameAttributes.PHONE_NUMBER:
+				fields = confirmPassword
+					? signUpWithPhoneNumberFieldsPasswordConfirmation
+					: signUpWithPhoneNumberFields;
+				break;
+			default:
+				fields = confirmPassword
+					? DefaultFieldsPasswordConfirmation
+					: defaultSignUpFieldAssets;
+				break;
+		}
+		this.signUpFields = fields;
+		this.defaultSignUpFields = fields;
 	}
 }

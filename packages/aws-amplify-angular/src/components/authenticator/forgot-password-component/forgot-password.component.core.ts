@@ -63,6 +63,7 @@ const template = `
         placeholder="{{ this.amplifyService.i18n().get('Password') }}"
         data-test="${auth.forgotPassword.newPasswordInput}"
       />
+	  
       </div>
       <div class="amplify-form-actions">
         <div class="amplify-form-cell-right">

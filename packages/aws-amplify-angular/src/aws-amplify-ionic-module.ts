@@ -21,6 +21,7 @@ import { AmplifyService } from './providers/amplify.service';
 import { AuthenticatorIonicComponent } from './components/authenticator/authenticator/authenticator.component.ionic';
 import { ConfirmSignInComponentIonic } from './components/authenticator/confirm-sign-in-component/confirm-sign-in-component.ionic';
 import { ConfirmSignUpComponentIonic } from './components/authenticator/confirm-sign-up-component/confirm-sign-up.component.ionic';
+import { ConfirmPasswordFieldComponentIonic } from './components/authenticator/confirm-password-field-component/confirm-password-field.component.ionic';
 import { ForgotPasswordComponentIonic } from './components/authenticator/forgot-password-component/forgot-password.component.ionic';
 import { GreetingComponentIonic } from './components/authenticator/greeting-component/greeting.component.ionic';
 import { SignInComponentIonic } from './components/authenticator/sign-in-component/sign-in.component.ionic';
@@ -40,6 +41,7 @@ const components = [
 	AuthenticatorIonicComponent,
 	ConfirmSignInComponentIonic,
 	ConfirmSignUpComponentIonic,
+	ConfirmPasswordFieldComponentIonic,
 	ForgotPasswordComponentIonic,
 	GreetingComponentIonic,
 	SignInComponentIonic,

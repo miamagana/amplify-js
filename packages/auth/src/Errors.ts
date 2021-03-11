@@ -81,6 +81,9 @@ export const authErrorMessages: AuthErrorMessages = {
 	emptyPassword: {
 		message: AuthErrorStrings.EMPTY_PASSWORD,
 	},
+	passwordsMismatch: {
+		message: AuthErrorStrings.PASSWORDS_MISMATCH,
+	},
 	emptyCode: {
 		message: AuthErrorStrings.EMPTY_CODE,
 	},

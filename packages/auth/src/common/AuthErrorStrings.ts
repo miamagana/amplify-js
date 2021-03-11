@@ -3,6 +3,7 @@ export enum AuthErrorStrings {
 	EMPTY_USERNAME = 'Username cannot be empty',
 	INVALID_USERNAME = 'The username should either be a string or one of the sign in types',
 	EMPTY_PASSWORD = 'Password cannot be empty',
+	PASSWORDS_MISMATCH = 'Passwords do not match',
 	EMPTY_CODE = 'Confirmation code cannot be empty',
 	SIGN_UP_ERROR = 'Error creating account',
 	NO_MFA = 'No valid MFA method provided',

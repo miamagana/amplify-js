@@ -41,6 +41,7 @@ export class AuthenticatorComponent implements OnInit, OnDestroy {
 	@Input() hide: string[] = [];
 	@Input() signUpConfig: any;
 	@Input() usernameAttributes: string = 'username';
+	@Input() confirmPassword: boolean = true;
 	@ViewChild(DynamicComponentDirective)
 	componentHost: DynamicComponentDirective;
 
@@ -59,11 +60,13 @@ export class AuthenticatorComponent implements OnInit, OnDestroy {
 						hide: this.hide,
 						signUpConfig: this.signUpConfig,
 						usernameAttributes: this.usernameAttributes,
+						confirmPassword: this.confirmPassword,
 				  })
 				: new ComponentMount(AuthenticatorComponentCore, {
 						hide: this.hide,
 						signUpConfig: this.signUpConfig,
 						usernameAttributes: this.usernameAttributes,
+						confirmPassword: this.confirmPassword,
 				  });
 
 		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
